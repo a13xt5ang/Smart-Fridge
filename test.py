@@ -20,7 +20,11 @@ b1, b2, b3 = thirds(full)
 raw_input()
 (e2).show()
 raw_input()
+<<<<<<< HEAD
 (b2-e2).show()
+=======
+(e2-b2).show()
+>>>>>>> fc6250c6280a8100aeff6c7030182a799b9b2ec4
 raw_input()
 
 assert(scan_image("empty.jpg") == [])
