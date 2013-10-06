@@ -1,9 +1,12 @@
 from SimpleCV import Image, Color
+import pull
 
 class Food:
   APPLE = 1
   BANANA = 2
   REDBULL = 3
+  PLUM = 4
+  PEAR = 5
 
 def thirds(image):
   first = image.crop(image.width*0/3, 0, image.width/3, image.height)
@@ -47,6 +50,16 @@ def is_banana(color):
   else:
     return False
 
+def is_pear(color):
+  if color:
+    b, g, r = color
+    if max(r, b) < g:
+      return True
+    else:
+      return False
+  else:
+    return False
+
 def scan_image(empty, full):
   empty = Image(empty)
   full = Image(full)
@@ -65,26 +78,42 @@ def scan_image(empty, full):
       fruit.append(Food.APPLE)
     if is_banana(color):
       fruit.append(Food.BANANA)
+    if is_pear(color):
+      fruit.append(Food.PEAR)
 
   return fruit
 
-assert(Food.APPLE not in scan_image("empty.jpg", "empty.jpg"))
-assert(Food.APPLE not in scan_image("empty.jpg", "banana.jpg"))
-assert(Food.APPLE in scan_image("empty.jpg", "appleredbull.jpg"))
-assert(Food.APPLE not in scan_image("empty.jpg", "redbull.jpg"))
-assert(Food.APPLE not in scan_image("empty.jpg", "redbullpepsi.jpg"))
-assert(Food.APPLE in scan_image("empty.jpg", "redbullpepsiapple.jpg"))
+url = "http://18.111.27.86:8080/shot.jpg" 
 
-assert(Food.BANANA not in scan_image("empty.jpg", "empty.jpg"))
-assert(Food.BANANA in scan_image("empty.jpg", "banana.jpg"))
-assert(Food.BANANA not in scan_image("empty.jpg", "appleredbull.jpg"))
-assert(Food.BANANA not in scan_image("empty.jpg", "redbull.jpg"))
-assert(Food.BANANA not in scan_image("empty.jpg", "redbullpepsi.jpg"))
-assert(Food.BANANA not in scan_image("empty.jpg", "redbullpepsiapple.jpg"))
+#print(scan_image("empty2.jpg", "pear.jpg"))
+#assert(scan_image("empty2.jpg", "pear.jpg") == [Food.PEAR, Food.BANANA])
+pull.pull_newest_image(url)
+pull.pull_newest_image(url)
+base = pull.get_newest_image()
 
-#assert(scan_image("empty.jpg", "empty.jpg") == [])
-#assert(scan_image("empty.jpg", "banana.jpg") == [Food.BANANA])
-#assert(scan_image("empty.jpg", "appleredbull.jpg") == [Food.APPLE, Food.REDBULL])
-#assert(scan_image("empty.jpg", "redbull.jpg") == [Food.REDBULL])
-#assert(scan_image("empty.jpg", "redbullpepsi.jpg") == [Food.REDBULL, Food.PEPSI])
-#assert(scan_image("empty.jpg", "redbullpepsiapple.jpg") == [Food.REDBULL, Food.PEPSI, Food.APPLE])
+while True:
+  pull.pull_newest_image(url)
+  search = pull.get_newest_image()
+  pot = scan_image(base, search)
+  print pot
+
+assert(Food.APPLE not in scan_image(base, "empty.jpg"))
+assert(Food.APPLE not in scan_image(base, "banana.jpg"))
+assert(Food.APPLE in scan_image(base, "appleredbull.jpg"))
+assert(Food.APPLE not in scan_image(base, "redbull.jpg"))
+assert(Food.APPLE not in scan_image(base, "redbullpepsi.jpg"))
+assert(Food.APPLE in scan_image(base, "redbullpepsiapple.jpg"))
+
+assert(Food.BANANA not in scan_image(base, "empty.jpg"))
+assert(Food.BANANA in scan_image(base, "banana.jpg"))
+assert(Food.BANANA not in scan_image(base, "appleredbull.jpg"))
+assert(Food.BANANA not in scan_image(base, "redbull.jpg"))
+assert(Food.BANANA not in scan_image(base, "redbullpepsi.jpg"))
+assert(Food.BANANA not in scan_image(base, "redbullpepsiapple.jpg"))
+
+#assert(scan_image(base, "empty.jpg") == [])
+#assert(scan_image(base, "banana.jpg") == [Food.BANANA])
+#assert(scan_image(base, "appleredbull.jpg") == [Food.APPLE, Food.REDBULL])
+#assert(scan_image(base, "redbull.jpg") == [Food.REDBULL])
+#assert(scan_image(base, "redbullpepsi.jpg") == [Food.REDBULL, Food.PEPSI])
+#assert(scan_image(base, "redbullpepsiapple.jpg") == [Food.REDBULL, Food.PEPSI, Food.APPLE])
